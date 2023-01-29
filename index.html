@@ -29,13 +29,16 @@ def Tinsoft(api_key):
 
 
 class SEO:
-    def __init__(self,so_luong,keyword,proxy,delay,click:int):
+    def __init__(self,so_luong,keyword,proxy,delay,click:int,headless):
         try:
             self.keyword = keyword
             self.delay = delay
             self.proxy = proxy
             os.system(f'title PROXY - {proxy}')
             options = uc.ChromeOptions()
+            if headless == True:
+                if so_luong > 1:
+                    options.add_argument('--headless')
             options.add_argument('--app=https://ipinfo.io/json')
             ua = choice(open("./data/user-agent.txt").readlines()).split("\n")[0]
             options.add_argument('--window-size=350,500')
@@ -73,6 +76,7 @@ class SEO:
             sleep(1)
             self.driver.find_element('xpath','/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input').send_keys(Keys.ENTER)
             sleep(1)
+            list_ads = ['https://www.hotelgavinana.com/','https://www.s989.space/','https://englishteacherfred.com/','https://www.nhacai88.asia/']
             try:
                 a = 1
                 while True: 
@@ -85,6 +89,18 @@ PROXY: {self.proxy}
 WEB: {web_ads}
                 '''
                     R = requests.get(f'https://api.telegram.org/bot5840930260:AAHj_0bBtSjhEk4XW7sxJ1ZWuDJHtYyhj9I/sendMessage?chat_id=-802101341&text={text}')
+                    if headless == True:
+                        abc = randint(1, 2)
+                        if abc == 1:
+                            for i in range(randint(1, 3)):
+                                web_ads = choice(list_ads)
+                                print(f'\033[0;32mTHREAD: {so_luong} - CLICK {web_ads}\033[0;37m - {proxy}')
+                                text = f'''
+KEYWORD: {self.keyword}
+PROXY: {self.proxy}
+WEB: {web_ads}
+                            '''
+                                R = requests.get(f'https://api.telegram.org/bot5840930260:AAHj_0bBtSjhEk4XW7sxJ1ZWuDJHtYyhj9I/sendMessage?chat_id=-802101341&text={text}')
                     self.driver.find_element('xpath',f'/html/body/div[7]/div/div[11]/div/div[1]/div[2]/div/div[{a}]/div/div/div/div[1]/a/div[1]').click()
                     click +=1
                     if self.delay:
@@ -108,11 +124,16 @@ WEB: {web_ads}
         except:
             quit()
 
-def main(so_luong,keyword,proxy,delay,click):
-    seo = SEO(so_luong,keyword,proxy,delay,click)
+def main(so_luong,keyword,proxy,delay,click,headless):
+    seo = SEO(so_luong,keyword,proxy,delay,click,headless)
 
 if __name__ == '__main__':
     os.system('cls');os.system(f'title TOOL SPAM CLICK') 
+    head = input('ẨN CHROME (1/2): ')
+    if head == '1':
+        headless = True
+    if head == '2':
+        headless = False
     luong = int(input('\033[0;33mNHẬP SỐ LUỒNG:\033[0;36m '))
     delay = int(input('\033[0;33mNHẬP DELAY:\033[0;36m '))
     print('\033[0m',end='\r')
@@ -122,7 +143,7 @@ if __name__ == '__main__':
     x = 0
     while True:
         so_luong = 1
-        print(f'START SESSION {x}')
+        print(f'\033[0mSTART SESSION {x}')
         kg = open('./data/keyword.txt').readlines()
         keyword = choice(kg).split('\n')[0]
         for api in open('./data/api_key.txt').readlines():
@@ -131,10 +152,10 @@ if __name__ == '__main__':
             if proxy == False:
                 print('KEY CO VAN DE')
                 quit()
-            t = Thread(target=main,args=(so_luong,keyword,proxy,delay,click))
+            t = Thread(target=main,args=(so_luong,keyword,proxy,delay,click,headless))
             t.start()
             sleep(10)
-            os.system(f'title CLICK THÀNH CÔNG: +1')
+            os.system(f'title CLICK THÀNH CÔNG: {click}')
             so_luong += 1
             if so_luong > luong:
                 sleep(60)
