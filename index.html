@@ -84,6 +84,7 @@ class SEO:
                     web_ads = inner.split('role="text">')[1].split('<')[0]
                     print(f'\033[0;32mTHREAD: {so_luong} - CLICK {web_ads}\033[0;37m - {proxy}')
                     click.append('a')
+                    os.system(f'title CLICK THÀNH CÔNG: {len(click)}')
                     text = f'''
 KEYWORD: {self.keyword}
 PROXY: {self.proxy}
@@ -97,8 +98,9 @@ WEB: {web_ads}
                                 web_ads = choice(list_ads)
                                 print(f'\033[0;32mTHREAD: {so_luong} - CLICK {web_ads}\033[0;37m - {proxy}')
                                 click.append('a')
+                                os.system(f'title CLICK THÀNH CÔNG: {len(click)}')
                                 text = f'''
-KEYWORD: {self.keyword}
+THREAD: {so_luong}
 PROXY: {self.proxy}
 WEB: {web_ads}
                             '''
@@ -156,7 +158,6 @@ if __name__ == '__main__':
             t = Thread(target=main,args=(so_luong,keyword,proxy,delay,click,headless))
             t.start()
             sleep(10)
-            os.system(f'title CLICK THÀNH CÔNG: {len(click)}')
             so_luong += 1
             if so_luong > luong:
                 sleep(60)
