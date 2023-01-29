@@ -1,0 +1,139 @@
+import undetected_chromedriver as uc
+from time import sleep
+import os
+from threading import *
+from selenium.webdriver.common.keys import Keys
+from random import *
+import tkinter as tk
+import zipfile
+import requests
+root = tk.Tk()
+screen_width = root.winfo_screenwidth()
+def Tinsoft(api_key):
+    try:
+        current = requests.get(f'http://proxy.tinsoftsv.com/api/getProxy.php?key={api_key}').json()
+        if int(current['next_change']) == 0:
+            proxy = requests.get(f'http://proxy.tinsoftsv.com/api/changeProxy.php?key={api_key}&location=0').json()
+            if proxy['success'] == True:
+                return proxy['proxy']
+            else:
+                return False
+        else:
+            return current['proxy']
+    except:
+        proxy = requests.get(f'http://proxy.tinsoftsv.com/api/changeProxy.php?key={api_key}&location=0').json()
+        if proxy['success'] == True:
+            return proxy['proxy']
+        else:
+            return False
+
+
+class SEO:
+    def __init__(self,so_luong,keyword,proxy,delay,click:int):
+        #try:
+            self.keyword = keyword
+            self.delay = delay
+            self.proxy = proxy
+            options = uc.ChromeOptions()
+            options.add_argument('--app=https://ipinfo.io/json')
+            ua = choice(open("./data/user-agent.txt").readlines()).split("\n")[0]
+            options.add_argument('--window-size=350,500')
+            options.add_argument(f'--proxy-server={proxy}')
+            #print(ua)
+            try:
+                self.driver = uc.Chrome(options=options)
+            except:
+                self.driver.quit()
+            #print(f'\033[0;37mTHREAD: {so_luong} - KHỞI TẠO CHROME - {proxy}')
+            self.driver.get('https://www.google.com.vn/')
+            if 'About this page' in self.driver.page_source:
+                print(f'\033[0;31mTHREAD: {so_luong} - GOOGLE CHECK BOT - {proxy}\033[0;37m')
+                sleep(30)
+                self.driver.quit()
+                quit()
+            if 'Google có các thứ tiếng' not in self.driver.page_source:
+                print(f'\033[0;31mTHREAD: {so_luong} - CONNECT ERROR - {proxy}\033[0;37m')
+                sleep(30)
+                self.driver.quit()
+                quit()
+            try:
+                self.driver.find_element('xpath','/html/body/div[1]/div[2]/button').click()
+                self.driver.quit()
+                quit()
+            except:
+                pass
+            x_position = 350 * so_luong
+            if x_position >= screen_width:
+                x_position = 350
+            self.driver.set_window_position(x=x_position, y=0)
+            self.driver.implicitly_wait(15)
+            for i in keyword:
+                self.driver.find_element('xpath','/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input').send_keys(i)
+            sleep(1)
+            self.driver.find_element('xpath','/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input').send_keys(Keys.ENTER)
+            sleep(1)
+            try:
+                a = 1
+                while True: 
+                    inner = self.driver.find_element('xpath',f'/html/body/div[7]/div/div[11]/div/div[1]/div[2]/div/div[{a}]/div/div/div/div[1]/a/div[2]').get_attribute('innerHTML')
+                    web_ads = inner.split('role="text">')[1].split('<')[0]
+                    print(f'\033[0;32mTHREAD: {so_luong} - CLICK {web_ads}\033[0;37m - {proxy}')
+                    text = f'''
+KEYWORD: {self.keyword}
+PROXY: {self.proxy}
+WEB: {web_ads}
+                '''
+                    R = requests.get(f'https://api.telegram.org/bot5840930260:AAHj_0bBtSjhEk4XW7sxJ1ZWuDJHtYyhj9I/sendMessage?chat_id=-802101341&text={text}')
+                    self.driver.find_element('xpath',f'/html/body/div[7]/div/div[11]/div/div[1]/div[2]/div/div[{a}]/div/div/div/div[1]/a/div[1]').click()
+                    click +=1
+                    if self.delay:
+                        sleep(self.delay)
+                    else:
+                        sleep(2)
+                    for i in range(30):
+                        self.driver.execute_script(f'scroll(0,{i*5})')
+                    if self.delay:
+                        sleep(self.delay)
+                    else:
+                        sleep(2)
+                    self.driver.back()
+                    a+=1
+            except:
+                print(f'\033[0;37mTHREAD: {so_luong} - ĐÃ HẾT WEB ADS - DELAY')
+                self.driver.quit()
+                sleep(40)
+                quit()
+                sleep(2)
+        # except:
+        #     print('?')
+        #     pass
+
+def main(so_luong,keyword,proxy,delay,click):
+    seo = SEO(so_luong,keyword,proxy,delay,click)
+
+if __name__ == '__main__':
+    os.system('cls');os.system(f'title TOOL SPAM CLICK')
+    delay = int(input('\033[0;33mNHẬP DELAY:\033[0;36m '))
+    print('\033[0m',end='\r')
+    sleep(1)
+    os.system('cls')
+    click = 0
+    so_luong = 1
+    x = 0
+    while True:
+        print(f'START SESSION {x}')
+        kg = open('./data/keyword.txt').readlines()
+        keyword = choice(kg).split('\n')[0]
+        for api in open('./data/api_key.txt').readlines():
+            api_key = api.split('\n')
+            proxy = Tinsoft(api_key)
+            if proxy == False:
+                print('KEY CO VAN DE')
+                quit()
+            t = Thread(target=main,args=(so_luong,keyword,proxy,delay,click))
+            t.start()
+            sleep(10)
+            os.system(f'title CLICK THÀNH CÔNG: {click}')
+            so_luong += 1
+        x += 1
+        sleep(45)
