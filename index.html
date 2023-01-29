@@ -38,7 +38,8 @@ class SEO:
             options = uc.ChromeOptions()
             options.add_argument('--app=https://ipinfo.io/json')
             ua = choice(open("./data/user-agent.txt").readlines()).split("\n")[0]
-            options.add_argument('--head-less')
+            if so_luong > 1:
+                options.add_argument('--headless')
             options.add_argument('--window-size=350,500')
             options.add_argument(f'--proxy-server={proxy}')
             #print(ua)
@@ -120,9 +121,9 @@ if __name__ == '__main__':
     sleep(1)
     os.system('cls')
     click = 0
-    so_luong = 1
     x = 0
     while True:
+        so_luong = 1
         print(f'START SESSION {x}')
         kg = open('./data/keyword.txt').readlines()
         keyword = choice(kg).split('\n')[0]
