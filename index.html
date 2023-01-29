@@ -148,9 +148,16 @@ if __name__ == '__main__':
         so_luong = 1
         print(f'\033[0mSTART SESSION {x}')
         kg = open('./data/keyword.txt').readlines()
-        keyword = choice(kg).split('\n')[0]
+        while True:
+            keyword = choice(kg).split('\n')[0]
+            if keyword == '':
+                continue
+            else:
+                break
         for api in open('./data/api_key.txt').readlines():
             api_key = api.split('\n')
+            if api_key == '':
+                continue
             proxy = Tinsoft(api_key)
             if proxy == False:
                 print('KEY CO VAN DE')
