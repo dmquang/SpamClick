@@ -34,16 +34,18 @@ class SEO:
             self.keyword = keyword
             self.delay = delay
             self.proxy = proxy
+            os.system(f'title PROXY - {proxy}')
             options = uc.ChromeOptions()
             options.add_argument('--app=https://ipinfo.io/json')
             ua = choice(open("./data/user-agent.txt").readlines()).split("\n")[0]
+            options.add_argument('--head-less')
             options.add_argument('--window-size=350,500')
             options.add_argument(f'--proxy-server={proxy}')
             #print(ua)
             try:
                 self.driver = uc.Chrome(options=options)
             except:
-                self.driver.quit()
+                quit()
             #print(f'\033[0;37mTHREAD: {so_luong} - KHỞI TẠO CHROME - {proxy}')
             self.driver.get('https://www.google.com.vn/')
             if 'About this page' in self.driver.page_source:
@@ -112,7 +114,7 @@ def main(so_luong,keyword,proxy,delay,click):
     seo = SEO(so_luong,keyword,proxy,delay,click)
 
 if __name__ == '__main__':
-    os.system('cls');os.system(f'title TOOL SPAM CLICK')
+    os.system('cls');os.system(f'title TOOL SPAM CLICK') 
     delay = int(input('\033[0;33mNHẬP DELAY:\033[0;36m '))
     print('\033[0m',end='\r')
     sleep(1)
