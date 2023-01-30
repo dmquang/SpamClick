@@ -19,21 +19,14 @@ if __name__ == '__main__':
 
     def Tinsoft(api_key):
         try:
-            current = requests.get(f'http://proxy.tinsoftsv.com/api/getProxy.php?key={api_key}').json()
-            if int(current['next_change']) == 0:
-                proxy = requests.get(f'http://proxy.tinsoftsv.com/api/changeProxy.php?key={api_key}&location=0').json()
-                if proxy['success'] == True:
-                    return proxy['proxy']
-                else:
-                    return False
+            get = requests.get(f'http://proxy.tinsoftsv.com/api/getProxy.php?key={api_key}').json()
+            if get['next_change'] == '0':
+                get = requests.get(f'http://proxy.tinsoftsv.com/api/changeProxy.php?key={api_key}&location=0').json()
+                return get['proxy']
             else:
-                return current['proxy']
+                return get['proxy']
         except:
-            proxy = requests.get(f'http://proxy.tinsoftsv.com/api/changeProxy.php?key={api_key}&location=0').json()
-            if proxy['success'] == True:
-                return proxy['proxy']
-            else:
-                return False
+            return False
 
     class SEO:
         def __init__(self,so_luong,keyword,proxy,delay,click:list,headless):
@@ -177,7 +170,7 @@ WEB: {web_ads}
                     continue
                 proxy = Tinsoft(api_key)
                 if proxy == False:
-                    print('KEY CO VAN DE')
+                    root.title('API KEY PROXY KHONG HOP LE!')
                     quit()
                 t = Thread(target=run,args=(so_luong,keyword,proxy,delay,click,headless))
                 t.start()
