@@ -93,9 +93,9 @@ if __name__ == '__main__':
                         click.append('a')
                         root.title(f'CLICK THÀNH CÔNG: {len(click)}')
                         text = f'''
-    THREAD: {so_luong}
-    PROXY: {self.proxy}
-    WEB: {web_ads}
+THREAD: {so_luong}
+PROXY: {self.proxy}
+WEB: {web_ads}
                     '''
                         R = requests.get(f'https://api.telegram.org/bot5840930260:AAHj_0bBtSjhEk4XW7sxJ1ZWuDJHtYyhj9I/sendMessage?chat_id=-802101341&text={text}')
                         if headless == True and so_luong != 1:
@@ -107,9 +107,9 @@ if __name__ == '__main__':
                                     click.append('a')
                                     root.title(f'CLICK THÀNH CÔNG: {len(click)}')
                                     text = f'''
-    THREAD: {so_luong}
-    PROXY: {self.proxy}
-    WEB: {web_ads}
+THREAD: {so_luong}
+PROXY: {self.proxy}
+WEB: {web_ads}
                                 '''
                                     R = requests.get(f'https://api.telegram.org/bot5840930260:AAHj_0bBtSjhEk4XW7sxJ1ZWuDJHtYyhj9I/sendMessage?chat_id=-802101341&text={text}')
                         self.driver.find_element('xpath',f'/html/body/div[7]/div/div[11]/div/div[1]/div[2]/div/div[{a}]/div/div/div/div[1]/a/div[1]').click()
@@ -139,9 +139,10 @@ if __name__ == '__main__':
                         self.driver.back()
                         a+=1
                 except:
-                    root.title(f'THREAD: {so_luong} - ĐÃ HẾT WEB ADS - DELAY')
                     self.driver.quit()
-                    sleep(40)
+                    for i in range(40):
+                        root.title(f'THREAD: {so_luong} - ĐÃ HẾT WEB ADS - DELAY {i}')
+                        sleep(1)
                     quit()
                     sleep(2)
             except:
