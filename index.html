@@ -8,6 +8,9 @@ from selenium.webdriver.common.keys import Keys
 from random import *
 import requests
 
+with open('google.png','wb') as f:
+    f.write(requests.get('https://i.imgur.com/okFf1BW.png').content)
+
 if __name__ == '__main__':
     root = Tk()
     screen_width = root.winfo_screenwidth()
@@ -30,7 +33,7 @@ if __name__ == '__main__':
 
     class SEO:
         def __init__(self,so_luong,keyword,proxy,delay,click:list,headless):
-            #try:
+            try:
                 self.keyword = keyword
                 self.delay = delay
                 self.proxy = proxy
@@ -137,8 +140,8 @@ WEB: {web_ads}
                         sleep(1)
                     quit()
                     sleep(2)
-            #except:
-            #    quit()
+            except:
+               quit()
 
     def run(so_luong,keyword,proxy,delay,click,headless):
         seo = SEO(so_luong,keyword,proxy,delay,click,headless)
