@@ -7,6 +7,27 @@ from threading import *
 from selenium.webdriver.common.keys import Keys
 from random import *
 import requests
+import sys
+import ctypes
+
+def terminate_thread(thread):
+    """Terminates a python thread from another thread.
+
+    :param thread: a threading.Thread instance
+    """
+    if not thread.is_alive():
+        return
+
+    exc = ctypes.py_object(SystemExit)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(
+        ctypes.c_long(thread.ident), exc)
+    if res == 0:
+        raise ValueError("nonexistent thread id")
+    elif res > 1:
+        # """if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect"""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(thread.ident, None)
+        raise SystemError("PyThreadState_SetAsyncExc failed")
 
 with open('google.png','wb') as f:
     f.write(requests.get('https://i.imgur.com/okFf1BW.png').content)
@@ -29,7 +50,11 @@ if __name__ == '__main__':
             else:
                 return get['proxy']
         except:
-            return False
+            try:
+                get = requests.get(f'http://proxy.tinsoftsv.com/api/changeProxy.php?key={api_key}&location=0').json()
+                return get['proxy']
+            except:
+                return False
 
     class SEO:
         def __init__(self,so_luong,keyword,proxy,delay,click:list,headless):
@@ -86,7 +111,8 @@ if __name__ == '__main__':
                         web_ads = inner.split('role="text">')[1].split('<')[0]
                         view.insert('', index='end',values=(proxy,web_ads))
                         click.append('a')
-                        root.title(f'CLICK THÀNH CÔNG: {len(click)}')
+                        label_click = Label(root,text=f'CLICK: {len(click)}')
+                        label_click.grid(column=10,row=2)
                         text = f'''
 THREAD: {so_luong}
 PROXY: {self.proxy}
@@ -100,7 +126,8 @@ WEB: {web_ads}
                                     web_ads = choice(list_ads)
                                     view.insert('', index='end',values=(proxy,web_ads))
                                     click.append('a')
-                                    root.title(f'CLICK THÀNH CÔNG: {len(click)}')
+                                    label_click = Label(root,text=f'CLICK: {len(click)}')
+                                    label_click.grid(column=10,row=2)
                                     text = f'''
 THREAD: {so_luong}
 PROXY: {self.proxy}
@@ -174,7 +201,7 @@ WEB: {web_ads}
                 print(proxy)
                 if proxy == False:
                     root.title('API KEY PROXY KHONG HOP LE!')
-                    quit()
+                    continue
                 t = Thread(target=run,args=(so_luong,keyword,proxy,delay,click,headless))
                 t.start()
                 sleep(10)
@@ -186,10 +213,18 @@ WEB: {web_ads}
             sleep(45)
 
     #['https://www.cny23.live/','https://www.jun99.xyz/','https://www.8k678.info/','https://www.ttoan28.live/','http://www.watermeterdash.com/']
-
+        
+    threads = []
     def TkinThread():
-        t=Thread(target=main)
-        t.start()
+        threads.append(Thread(target=main))
+        for t in threads:
+            t.start()
+            
+
+    def KillThreads():
+        for t in threads:
+            terminate_thread(thread=t)
+        
 
     label = Label(root, text='SỐ LUỒNG:',bg='#C0C0C0')
     label2 = Label(root,text='ẨN CHROME (1/2):',bg='#C0C0C0')
@@ -201,11 +236,11 @@ WEB: {web_ads}
     label.grid(column=0,row=1)
     label2.grid(column=0,row=2)
     label3.grid(column=0,row=3)
-    ent.grid(column=2, row=1,padx=10)
-    ent2.grid(column=2, row=2,padx=10)
-    ent3.grid(column=2, row=3,padx=10)
+    ent.grid(column=2, row=1)
+    ent2.grid(column=2, row=2)
+    ent3.grid(column=2, row=3)
     btn = Button(root,text='BẮT ĐẦU',command=TkinThread)
-    btn.grid(column=7,row=2,padx=1)
+    btn.grid(column=7,row=1,padx=2)
     view = ttk.Treeview(root,columns=('proxy','url'),show='headings')
     view.place(x=5,y=75,width=490,height=225)
     view.heading('proxy',text='PROXY')
