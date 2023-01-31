@@ -135,7 +135,7 @@ WEB: {web_ads}
                         a+=1
                 except:
                     self.driver.quit()
-                    for i in range(40):
+                    for i in range(5):
                         root.title(f'THREAD: {so_luong} - ĐÃ HẾT WEB ADS - DELAY {i}')
                         sleep(1)
                     quit()
