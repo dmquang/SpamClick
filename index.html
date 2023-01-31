@@ -75,6 +75,7 @@ if __name__ == '__main__':
                     self.driver = uc.Chrome(options=options)
                 except:
                     quit()
+                self.driver.minimize_window()
                 #print(f'\033[0;37mTHREAD: {so_luong} - KHỞI TẠO CHROME - {proxy}')
                 self.driver.get('https://www.google.com.vn/')
                 if 'About this page' in self.driver.page_source:
@@ -84,9 +85,9 @@ if __name__ == '__main__':
                     quit()
                 if 'Google có các thứ tiếng' not in self.driver.page_source:
                     root.title(f'THREAD: {so_luong} - CONNECT ERROR - {proxy}')
-                    sleep(30)
                     self.driver.quit()
                     quit()
+
                 try:
                     self.driver.find_element('xpath','/html/body/div[1]/div[2]/button').click()
                     self.driver.quit()
